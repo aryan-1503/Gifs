@@ -66,35 +66,32 @@
         searchBtn.onclick = handleSearch;
 
 
-        function fetchNewImage(){
-            fetchImage(searchTerm.value.trim());
+        async function fetchNewImage(){
+            await fetchImage(searchTerm.value.trim());
         }
-        function handleSearch(event){
+        async function handleSearch(event){
             welMsg.innerHTML = ''
             nextImage.style.display = 'flex';
             event.preventDefault();
             const searchInput = searchTerm.value.trim();
-            fetchImage(searchInput);
+            await fetchImage(searchInput);
         }
 
-        function fetchImage(searchTerm = 'cats'){
+        async function fetchImage(searchTerm = 'cats'){
             const API_KEY = 'X308Ap5Igx0tTsKUbER8r0Rnjn5vYF67';
             const apiUrl = `https://api.giphy.com/v1/gifs/translate?api_key=${API_KEY}&s=${searchTerm}%27`;
+            try {
+                const response = await fetch(apiUrl,{mode:'cors'});
+                if (!response.ok){
+                    throw new Error("Network response issue");
+                }
+                const responseData = await response.json();
+                image.src = responseData.data.images.original.url;
 
-            fetch(apiUrl,{mode : 'cors'})
-                .then(function (response){
-                    if (!response.ok){
-                        throw new Error("Network response is not okay");
-                    }
-                    return response.json();
-                })
-                .then(function (response){
-                    console.log(response)
-                    image.src = response.data.images.original.url
-                })
-                .catch(function (response){
-                    alert(response.message)
-                });
+            }catch (error){
+                alert(`Error : ${error.message}`);
+            }
+
         }
     </script>
 </body>
