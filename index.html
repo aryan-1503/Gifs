@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Giphy</title>
+</head>
+<style>
+    .imgs{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        top: 25%;
+
+    }
+    .search{
+        display: flex;
+        justify-content: right;
+        margin-right: 10rem;
+    }
+    .button{
+        position: fixed;
+        display: flex;
+        justify-content: center;
+    }
+    .button button{
+        display: none;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        left:45%;
+        width: 7rem;
+        height: 3rem;
+        font-size: large;
+        font-weight: bolder;
+        margin-top: 5rem;
+    }
+    #welcome-msg{
+        font-size: 25px;
+    }
+</style>
+<body>
+    <div class="search">
+        <form action="#" method="post">
+            <input type="text" id="searchTerm" name="searchTerm" placeholder="  cats">
+            <button id="search">Search</button>
+        </form>
+    </div>
+    <div class="imgs">
+        <p id="welcome-msg"></p>
+        <img src="#" alt="">
+    </div>
+    <div class="button">
+        <button id="next">Next Image</button>
+    </div>
+    <script>
+        const image = document.querySelector('img');
+        const nextImage = document.getElementById('next');
+        const searchBtn = document.getElementById('search');
+        const searchTerm = document.getElementById('searchTerm');
+        const welMsg = document.getElementById('welcome-msg');
+        welMsg.innerHTML = "<strong>You can Search for any GIF!!</strong>";
+
+        nextImage.onclick = fetchNewImage;
+        searchBtn.onclick = handleSearch;
+
+
+        function fetchNewImage(){
+            fetchImage(searchTerm.value.trim());
+        }
+        function handleSearch(event){
+            welMsg.innerHTML = ''
+            nextImage.style.display = 'flex';
+            event.preventDefault();
+            const searchInput = searchTerm.value.trim();
+            fetchImage(searchInput);
+        }
+
+        function fetchImage(searchTerm = 'cats'){
+            const API_KEY = 'X308Ap5Igx0tTsKUbER8r0Rnjn5vYF67';
+            const apiUrl = `https://api.giphy.com/v1/gifs/translate?api_key=${API_KEY}&s=${searchTerm}%27`;
+
+            fetch(apiUrl,{mode : 'cors'})
+                .then(function (response){
+                    if (!response.ok){
+                        throw new Error("Network response is not okay");
+                    }
+                    return response.json();
+                })
+                .then(function (response){
+                    console.log(response)
+                    image.src = response.data.images.original.url
+                })
+                .catch(function (response){
+                    alert(response.message)
+                });
+        }
+    </script>
+</body>
+</html>
+
